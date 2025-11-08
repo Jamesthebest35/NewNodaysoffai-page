@@ -8,9 +8,9 @@ const footerLinks = {
     { href: '#solutions', label: 'Solutions' },
   ],
   Legal: [
-    { href: '#footer', label: 'Privacy Policy' },
-    { href: '#footer', label: 'Cookies Policy' },
-    { href: '#footer', label: 'Cookie Settings' },
+    { href: '#privacy-policy', label: 'Privacy Policy' },
+    { href: '#cookies-policy', label: 'Cookies Policy' },
+    { href: '#cookie-settings', label: 'Cookie Settings' },
   ],
   Services: [
     { href: '#solutions', label: 'Construction AI' },
@@ -20,15 +20,41 @@ const footerLinks = {
   ],
 };
 
-const Footer: React.FC = () => {
-  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
+interface FooterProps {
+  onOpenPrivacyModal: () => void;
+  onOpenCookieModal: () => void;
+  onOpenCookieSettingsModal: () => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onOpenPrivacyModal, onOpenCookieModal, onOpenCookieSettingsModal }) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const href = e.currentTarget.getAttribute('href');
+
+    if (href === '#privacy-policy') {
+      onOpenPrivacyModal();
+      return;
+    }
+
+    if (href === '#cookies-policy') {
+      onOpenCookieModal();
+      return;
+    }
+    
+    if (href === '#cookie-settings') {
+      onOpenCookieSettingsModal();
+      return;
+    }
+
     if (href && href.startsWith('#')) {
       const sectionId = href.substring(1);
-      // Special case for footer links pointing to the footer itself
-      const elementId = sectionId === 'footer' ? 'footer' : sectionId;
-      const section = document.getElementById(elementId);
+      
+      if (['footer'].includes(sectionId)) {
+        document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+      
+      const section = document.getElementById(sectionId);
       if (section) {
         section.scrollIntoView({ behavior: 'smooth' });
       }
@@ -40,7 +66,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2 lg:col-span-1">
-            <a href="#home" onClick={handleScroll} className="flex items-center gap-3 mb-4">
+            <a href="#home" onClick={handleLinkClick} className="flex items-center gap-3 mb-4">
               <div className="size-6 text-primary">
                 <Logo />
               </div>
@@ -56,7 +82,7 @@ const Footer: React.FC = () => {
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <a className="text-sm text-gray-400 hover:text-primary" href={link.href} onClick={handleScroll}>
+                    <a className="text-sm text-gray-400 hover:text-primary" href={link.href} onClick={handleLinkClick}>
                       {link.label}
                     </a>
                   </li>

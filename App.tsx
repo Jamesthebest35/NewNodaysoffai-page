@@ -7,6 +7,10 @@ import Demos from './components/Demos';
 import Enterprise from './components/Enterprise';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
+import PolicyModal from './components/PolicyModal';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import CookiePolicy from './components/CookiePolicy';
+import CookieSettingsModal from './components/CookieSettingsModal';
 
 const ContactModal = ({ onClose }: { onClose: () => void }) => {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -93,8 +97,22 @@ const ContactModal = ({ onClose }: { onClose: () => void }) => {
 
 const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+  const [isCookieModalOpen, setIsCookieModalOpen] = useState(false);
+  const [isCookieSettingsModalOpen, setIsCookieSettingsModalOpen] = useState(false);
+
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleOpenPrivacyModal = () => setIsPrivacyModalOpen(true);
+  const handleClosePrivacyModal = () => setIsPrivacyModalOpen(false);
+  
+  const handleOpenCookieModal = () => setIsCookieModalOpen(true);
+  const handleCloseCookieModal = () => setIsCookieModalOpen(false);
+  
+  const handleOpenCookieSettingsModal = () => setIsCookieSettingsModalOpen(true);
+  const handleCloseCookieSettingsModal = () => setIsCookieSettingsModalOpen(false);
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
@@ -108,9 +126,26 @@ const App: React.FC = () => {
           <Enterprise />
           <CTA onOpenModal={handleOpenModal} />
         </main>
-        <Footer />
+        <Footer 
+          onOpenPrivacyModal={handleOpenPrivacyModal}
+          onOpenCookieModal={handleOpenCookieModal}
+          onOpenCookieSettingsModal={handleOpenCookieSettingsModal}
+        />
       </div>
        {isModalOpen && <ContactModal onClose={handleCloseModal} />}
+       {isPrivacyModalOpen && (
+        <PolicyModal title="Privacy Policy" onClose={handleClosePrivacyModal}>
+          <PrivacyPolicy />
+        </PolicyModal>
+      )}
+      {isCookieModalOpen && (
+        <PolicyModal title="Cookie Policy" onClose={handleCloseCookieModal}>
+          <CookiePolicy />
+        </PolicyModal>
+      )}
+      {isCookieSettingsModalOpen && (
+        <CookieSettingsModal onClose={handleCloseCookieSettingsModal} />
+      )}
     </div>
   );
 };
