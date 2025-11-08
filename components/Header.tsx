@@ -7,7 +7,7 @@ const navLinks = [
   { href: '#solutions', label: 'Solutions' },
 ];
 
-const Header: React.FC = () => {
+const Header: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -31,6 +31,11 @@ const Header: React.FC = () => {
     setIsMobileMenuOpen(false);
   };
 
+  const handleMobileModalOpen = () => {
+    onOpenModal();
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <>
       <header className="sticky top-0 z-50 w-full bg-background-dark/80 backdrop-blur-sm">
@@ -49,9 +54,9 @@ const Header: React.FC = () => {
                 </a>
               ))}
             </nav>
-            <a href="#get-started" onClick={handleScroll} className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
-              <span className="truncate">Get Started</span>
-            </a>
+            <button onClick={onOpenModal} className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+              <span className="truncate">Get in Contact</span>
+            </button>
           </div>
           <div className="md:hidden">
             <button onClick={toggleMobileMenu} className="p-2 rounded-md text-gray-300 hover:bg-surface" aria-label="Toggle menu">
@@ -75,12 +80,11 @@ const Header: React.FC = () => {
                 {link.label}
               </a>
             ))}
-             <a 
-                href="#get-started" 
-                onClick={handleMobileLinkClick}
+             <button
+                onClick={handleMobileModalOpen}
                 className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 mt-4 bg-primary text-background-dark text-lg font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
-              <span className="truncate">Get Started</span>
-            </a>
+              <span className="truncate">Get in Contact</span>
+            </button>
           </nav>
         </div>
       )}

@@ -66,7 +66,7 @@ const Footer: React.FC = () => {
           ))}
         </div>
         <div className="mt-12 border-t border-border pt-8 text-center text-sm text-gray-400">
-          <p>© 2024 No Days Off AI. All rights reserved.</p>
+          <p>© 2025 No Days Off AI. All rights reserved.</p>
         </div>
       </div>
     </footer>

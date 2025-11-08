@@ -3,23 +3,18 @@ export interface Project {
   name: string;
   progress: number;
   status: 'On Track' | 'At Risk' | 'Delayed';
-  schedule: string;
-  budget: string;
-  milestones: {
-    name: string;
-    date: string;
-    completed: boolean;
-  }[];
+  completionEst: string;
+  details?: string;
 }
 
 export interface Lead {
   id: string;
   name: string;
-  status: 'New' | 'Contacted' | 'Qualified' | 'Appointment Set';
-  property: string;
-  budget: string;
-  timeline: string;
-  notes: string[];
+  lookingFor: string;
+  matchScore: number;
+  lastContact: string;
+  nextShowing?: string;
+  temperature: 'Hot Lead' | 'Warm Lead';
 }
 
 
@@ -47,28 +42,18 @@ export const demosData: DemoData[] = [
     projects: [
       {
         id: 'p1',
-        name: 'Downtown Tower',
-        progress: 72,
+        name: 'Downtown Tower - Phase 2',
+        progress: 75,
         status: 'On Track',
-        schedule: '2 days ahead',
-        budget: '3% under',
-        milestones: [
-          { name: 'Rooftop Helipad Concrete Pour', date: 'This Friday', completed: false },
-          { name: 'Facade Panel Installation', date: 'Next Tuesday', completed: false },
-          { name: 'Steel Delivery', date: 'Yesterday', completed: true },
-        ],
+        completionEst: 'Est. 15 days remaining',
       },
       {
         id: 'p2',
-        name: 'Oceanview Condos',
+        name: 'Harbor Bridge Renovation',
         progress: 45,
         status: 'At Risk',
-        schedule: '1 week behind',
-        budget: '5% over',
-        milestones: [
-          { name: 'Plumbing Inspection', date: 'Tomorrow', completed: false },
-          { name: 'Window Installation', date: 'Next Monday', completed: false },
-        ],
+        completionEst: '',
+        details: 'Weather delay detected',
       },
     ],
   },
@@ -85,39 +70,20 @@ export const demosData: DemoData[] = [
     leads: [
       {
         id: 'l1',
-        name: 'Jane Doe',
-        status: 'Qualified',
-        property: '123 Main St',
-        budget: '$850,000 (Pre-approved)',
-        timeline: '60-90 days',
-        notes: ['Needs home office', 'Has a dog, needs yard'],
+        name: 'Sarah Johnson',
+        lookingFor: '3BR condo, $400K-500K',
+        matchScore: 92,
+        lastContact: '2 hours ago',
+        temperature: 'Hot Lead',
+        nextShowing: 'Scheduled showing for tomorrow at 2 PM',
       },
       {
         id: 'l2',
-        name: 'John Smith',
-        status: 'Appointment Set',
-        property: '456 Oak Ave',
-        budget: '$1.2M',
-        timeline: 'ASAP',
-        notes: ['Wants a pool', 'Viewing scheduled for Sat @ 2pm'],
-      },
-      {
-        id: 'l3',
-        name: 'Emily White',
-        status: 'Contacted',
-        property: '789 Pine Ln',
-        budget: '$650,000',
-        timeline: '3-6 months',
-        notes: ['First-time home buyer', 'Sent market report'],
-      },
-       {
-        id: 'l4',
-        name: 'Michael Brown',
-        status: 'New',
-        property: '101 Maple Dr',
-        budget: 'N/A',
-        timeline: 'Just browsing',
-        notes: ['Inquired via website form'],
+        name: 'Michael Chen',
+        lookingFor: 'Investment property',
+        matchScore: 78,
+        lastContact: '1 day ago',
+        temperature: 'Warm Lead',
       },
     ],
   },

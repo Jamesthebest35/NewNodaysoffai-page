@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Hero: React.FC = () => {
+const Hero: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const href = e.currentTarget.getAttribute('href');
@@ -29,9 +29,12 @@ const Hero: React.FC = () => {
             <a href="#demos" onClick={handleScroll} className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
               <span className="truncate">See Our Demos</span>
             </a>
-            <a href="#solutions" onClick={handleScroll} className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-surface border border-border text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-border/50 transition-colors">
-              <span className="truncate">View Solutions</span>
-            </a>
+            <button
+              onClick={onOpenModal}
+              className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-surface border border-border text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-border/50 transition-colors"
+            >
+              <span className="truncate">Get in Contact</span>
+            </button>
           </div>
         </div>
       </div>
