@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { DemoData } from '../data/demos';
+import { DemoData, Project, Lead } from '../data/demos';
 import { Logo } from './common/Logo';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 interface DemoShowcaseProps {
   demo: DemoData;
@@ -11,15 +9,15 @@ interface DemoShowcaseProps {
 
 const sidebarLinks = {
   Construction: [
-    { icon: 'dashboard', label: 'Dashboard' },
-    { icon: 'apartment', label: 'Projects', active: true },
+    { icon: 'dashboard', label: 'Dashboard', active: true },
+    { icon: 'apartment', label: 'Projects' },
     { icon: 'inventory_2', label: 'Inventory' },
     { icon: 'bar_chart', label: 'Reports' },
     { icon: 'settings', label: 'Settings' },
   ],
   'Real Estate': [
-    { icon: 'dashboard', label: 'Dashboard' },
-    { icon: 'groups', label: 'Leads', active: true },
+    { icon: 'dashboard', label: 'Dashboard', active: true },
+    { icon: 'groups', label: 'Leads' },
     { icon: 'house', label: 'Listings' },
     { icon: 'analytics', label: 'Market Analysis' },
     { icon: 'settings', label: 'Settings' },
@@ -49,8 +47,9 @@ const DemoShowcase: React.FC<DemoShowcaseProps> = ({ demo, onClose }) => {
   const renderActiveView = () => {
     switch(activeView) {
       case 'Projects':
+        return <ProjectsView projects={demo.projects || []} />;
       case 'Leads':
-        return <ChatView conversation={demo.showcaseConversation} />;
+        return <LeadsView leads={demo.leads || []} />;
       case 'Dashboard':
         return <DashboardView industry={demo.industry} />;
       case 'Inventory':
@@ -136,44 +135,6 @@ const DemoShowcase: React.FC<DemoShowcaseProps> = ({ demo, onClose }) => {
 
 // --- Sub-components for different views ---
 
-const ChatView: React.FC<{ conversation: DemoData['showcaseConversation'] }> = ({ conversation }) => (
-  <>
-    <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-      {conversation.map((msg, index) => (
-        <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-          {msg.role === 'model' && (
-            <div className="flex-shrink-0 size-8 bg-border rounded-full flex items-center justify-center text-primary mt-1">
-              <span className="material-symbols-outlined text-lg">smart_toy</span>
-            </div>
-          )}
-          <div
-            className={`px-4 py-2.5 rounded-xl max-w-lg prose prose-invert prose-sm ${
-              msg.role === 'user'
-                ? 'bg-primary text-background-dark'
-                : 'bg-surface border border-border text-gray-300'
-            }`}
-          >
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
-          </div>
-        </div>
-      ))}
-    </div>
-    <footer className="p-4 border-t border-border bg-surface/80 flex-shrink-0">
-      <div className="relative">
-        <input 
-          type="text"
-          readOnly
-          value="Interact with your AI Assistant here..."
-          className="w-full bg-border rounded-lg p-3 text-gray-400 text-sm pl-4 pr-10 cursor-not-allowed"
-        />
-        <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-          send
-        </span>
-      </div>
-    </footer>
-  </>
-);
-
 const ViewHeader: React.FC<{ icon: string; title: string; children?: React.ReactNode }> = ({ icon, title, children }) => (
   <header className="p-4 sm:p-6 border-b border-border flex-shrink-0">
     <div className="flex justify-between items-center">
@@ -185,6 +146,118 @@ const ViewHeader: React.FC<{ icon: string; title: string; children?: React.React
     </div>
   </header>
 );
+
+const ProjectsView: React.FC<{ projects: Project[] }> = ({ projects }) => {
+  const getStatusColor = (status: Project['status']) => {
+    switch (status) {
+      case 'On Track': return 'bg-green-500/10 text-green-400';
+      case 'At Risk': return 'bg-yellow-500/10 text-yellow-400';
+      case 'Delayed': return 'bg-red-500/10 text-red-500';
+      default: return 'bg-gray-500/10 text-gray-400';
+    }
+  };
+
+  return (
+    <>
+      <ViewHeader icon="apartment" title="Projects">
+        <button className="flex items-center gap-2 min-w-[84px] max-w-[480px] cursor-pointer justify-center overflow-hidden rounded-md h-9 px-3 bg-primary text-background-dark text-sm font-bold hover:bg-primary/90 transition-colors">
+          <span className="material-symbols-outlined text-base">add</span>
+          <span className="truncate">New Project</span>
+        </button>
+      </ViewHeader>
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+        {projects.map(project => (
+          <div key={project.id} className="bg-surface border border-border rounded-xl p-5">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-lg font-bold text-white">{project.name}</h3>
+                <span className={`mt-1 inline-block px-2 py-0.5 text-xs font-semibold rounded-full ${getStatusColor(project.status)}`}>{project.status}</span>
+              </div>
+              <div className="text-right">
+                 <p className="text-sm text-gray-300">Schedule: <span className="font-semibold text-white">{project.schedule}</span></p>
+                 <p className="text-sm text-gray-300">Budget: <span className="font-semibold text-white">{project.budget}</span></p>
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="flex justify-between items-center mb-1">
+                 <span className="text-xs font-medium text-gray-400">Overall Progress</span>
+                 <span className="text-xs font-medium text-primary">{project.progress}%</span>
+              </div>
+              <div className="w-full bg-border rounded-full h-2">
+                <div className="bg-primary h-2 rounded-full" style={{ width: `${project.progress}%` }}></div>
+              </div>
+            </div>
+            <div className="mt-4 border-t border-border pt-4">
+              <h4 className="text-sm font-semibold text-gray-300 mb-2">Upcoming Milestones</h4>
+              <ul className="space-y-2">
+                {project.milestones.filter(m => !m.completed).map(milestone => (
+                   <li key={milestone.name} className="flex items-center gap-3 text-sm">
+                      <span className="material-symbols-outlined text-gray-500">radio_button_unchecked</span>
+                      <span className="text-gray-300">{milestone.name}</span>
+                      <span className="ml-auto text-xs text-gray-400 bg-border px-2 py-1 rounded-md">{milestone.date}</span>
+                   </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
+
+const LeadsView: React.FC<{ leads: Lead[] }> = ({ leads }) => {
+  const getStatusColor = (status: Lead['status']) => {
+    switch (status) {
+      case 'New': return 'bg-blue-500/10 text-blue-400';
+      case 'Contacted': return 'bg-cyan-500/10 text-cyan-400';
+      case 'Qualified': return 'bg-green-500/10 text-green-400';
+      case 'Appointment Set': return 'bg-purple-500/10 text-purple-400';
+      default: return 'bg-gray-500/10 text-gray-400';
+    }
+  };
+
+  const headers = ['Lead Name', 'Property', 'Status', 'Next Action'];
+  
+  return (
+    <>
+      <ViewHeader icon="groups" title="Leads">
+        <button className="flex items-center gap-2 min-w-[84px] max-w-[480px] cursor-pointer justify-center overflow-hidden rounded-md h-9 px-3 bg-primary text-background-dark text-sm font-bold hover:bg-primary/90 transition-colors">
+          <span className="material-symbols-outlined text-base">add</span>
+          <span className="truncate">Add Lead</span>
+        </button>
+      </ViewHeader>
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="bg-surface border border-border rounded-xl overflow-hidden">
+          <table className="w-full text-sm text-left text-gray-300">
+            <thead className="bg-border/50">
+              <tr>{headers.map(h => <th key={h} className="px-6 py-3 font-medium text-gray-300 uppercase tracking-wider">{h}</th>)}</tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {leads.map(lead => (
+                <tr key={lead.id} className="hover:bg-border/30">
+                  <td className="px-6 py-4">
+                    <div className="font-bold text-white">{lead.name}</div>
+                    <div className="text-xs text-gray-400">{lead.budget}</div>
+                  </td>
+                  <td className="px-6 py-4 text-gray-400">{lead.property}</td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(lead.status)}`}>{lead.status}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <button className="flex items-center gap-2 cursor-pointer rounded-md h-8 px-3 bg-border text-gray-300 text-xs font-medium hover:bg-border/70 transition-colors">
+                      <span className="truncate">Schedule Call</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
+};
 
 // FIX: Define a type for stats to include optional 'color' property
 interface Stat {
@@ -266,7 +339,7 @@ const TableView: React.FC<{ industry: 'Construction' | 'Real Estate' }> = ({ ind
                             <tr key={rowIndex} className="hover:bg-border/30">
                                 {row.map((cell, cellIndex) => (
                                     <td key={cellIndex} className={`px-6 py-4 ${cellIndex === 0 ? 'font-bold text-white' : 'text-gray-400'}`}>
-                                        {cell.includes('Stock') || cell.includes('Active') ? <span className="px-2 py-1 text-xs rounded-full bg-green-500/10 text-green-400">{cell}</span> : cell.includes('Pending') || cell.includes('Order') ? <span className="px-2 py-1 text-xs rounded-full bg-yellow-500/10 text-yellow-400">{cell}</span> : cell }
+                                        {cell.includes('Stock') || cell.includes('Active') ? <span className="px-2 py-1 text-xs rounded-full bg-green-500/10 text-green-400">{cell}</span> : cell.includes('Pending') || cell.includes('Order') ? <span className="px-2 py-1 text-xs rounded-full bg-yellow-500/10 text-yellow-400">{cell}</span> : cell.includes('Sold') ? <span className="px-2 py-1 text-xs rounded-full bg-gray-500/20 text-gray-400">{cell}</span>: cell }
                                     </td>
                                 ))}
                             </tr>
@@ -283,6 +356,12 @@ const ReportsView: React.FC<{ industry: 'Construction' | 'Real Estate' }> = ({ i
   const isConstruction = industry === 'Construction';
   const title = isConstruction ? 'Reports' : 'Market Analysis';
   const icon = isConstruction ? 'bar_chart' : 'analytics';
+  const reportTitle = isConstruction ? 'Quarterly Project Performance' : 'Local Market Trends: Q2 2024';
+  const chartData = isConstruction 
+    ? [{ label: 'Q1', value: 80 }, { label: 'Q2', value: 92 }, { label: 'Q3', value: 88 }, { label: 'Q4', value: 95 }]
+    : [{ label: 'Jan', value: 750 }, { label: 'Feb', value: 780 }, { label: 'Mar', value: 820 }, { label: 'Apr', value: 810 }];
+  const maxChartValue = Math.max(...chartData.map(d => d.value)) * 1.2;
+
   return (
      <>
         <ViewHeader icon={icon} title={title}>
@@ -293,41 +372,80 @@ const ReportsView: React.FC<{ industry: 'Construction' | 'Real Estate' }> = ({ i
         </ViewHeader>
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
             <div className="bg-surface border border-border rounded-xl p-5">
-                 <h3 className="text-lg font-semibold text-white mb-4">{isConstruction ? 'Project Budget vs. Actual' : 'Median Sale Price Trend'}</h3>
-                 <div className="w-full h-64 bg-border/50 rounded-lg flex items-center justify-center">
-                    <p className="text-gray-500">
-                      {isConstruction ? '[ Mock Chart: Bar chart showing budget vs actual spending per project ]' : '[ Mock Chart: Line chart showing property price trends over 12 months ]'}
-                    </p>
+                 <h3 className="text-lg font-semibold text-white mb-4">{reportTitle}</h3>
+                 <div className="w-full h-64 bg-background-dark/50 rounded-lg p-4 flex items-end justify-around gap-2 border border-border/50">
+                    {/* Fake bar chart */}
+                    {chartData.map(data => (
+                      <div key={data.label} className="flex flex-col items-center justify-end h-full w-full">
+                        <div 
+                          className="w-3/4 bg-primary/80 hover:bg-primary transition-colors rounded-t-sm" 
+                          style={{ height: `${(data.value / maxChartValue) * 100}%` }}
+                          title={`${isConstruction ? '' : '$'}${data.value}${isConstruction ? '%' : 'k'}`}
+                        ></div>
+                        <span className="text-xs text-gray-400 mt-2">{data.label}</span>
+                      </div>
+                    ))}
                  </div>
+                 <p className="text-sm text-gray-400 mt-4 text-center">
+                    {isConstruction 
+                      ? 'On-time project completion rate by quarter.' 
+                      : 'Average home sale price (in thousands).'}
+                 </p>
             </div>
         </div>
-     </>
+    </>
   );
 };
 
 const SettingsView: React.FC = () => {
-    return (
-        <>
-            <ViewHeader icon="settings" title="Settings" />
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-                <div className="bg-surface border border-border rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-white mb-4">Notifications</h3>
-                     <div className="flex items-center justify-between">
-                        <span className="text-gray-300">Email Notifications</span>
+  return (
+    <>
+      <ViewHeader icon="settings" title="Settings" />
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="bg-surface border border-border rounded-xl divide-y divide-border">
+            <div className="p-5">
+                <h3 className="text-base font-semibold text-white">Profile</h3>
+                <p className="text-sm text-gray-400 mt-1">Update your personal information.</p>
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="name" className="text-xs font-medium text-gray-400">Name</label>
+                        <input type="text" id="name" defaultValue="Demo User" className="w-full mt-1 bg-border text-white text-sm rounded-md border-border/50 focus:ring-primary focus:border-primary" />
+                    </div>
+                    <div>
+                        <label htmlFor="email" className="text-xs font-medium text-gray-400">Email</label>
+                        <input type="email" id="email" defaultValue="demo@nodays.ai" className="w-full mt-1 bg-border text-white text-sm rounded-md border-border/50 focus:ring-primary focus:border-primary" />
+                    </div>
+                </div>
+            </div>
+            <div className="p-5">
+                <h3 className="text-base font-semibold text-white">Notifications</h3>
+                <p className="text-sm text-gray-400 mt-1">Manage how you receive notifications.</p>
+                <div className="mt-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-300">Email Notifications</span>
                         <label className="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" className="sr-only peer" defaultChecked />
-                            <div className="w-11 h-6 bg-border rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                          <input type="checkbox" value="" className="sr-only peer" defaultChecked />
+                          <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-300">Push Notifications</span>
+                         <label className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" value="" className="sr-only peer" />
+                          <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                         </label>
                     </div>
                 </div>
-                 <div className="bg-surface border border-border rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-white mb-4">API Integrations</h3>
-                    <p className="text-sm text-gray-400">Manage your connected applications.</p>
-                </div>
             </div>
-        </>
-    )
-};
-
+        </div>
+         <div className="mt-6 flex justify-end">
+            <button className="flex items-center gap-2 min-w-[84px] max-w-[480px] cursor-pointer justify-center overflow-hidden rounded-md h-9 px-4 bg-primary text-background-dark text-sm font-bold hover:bg-primary/90 transition-colors">
+                <span className="truncate">Save Changes</span>
+            </button>
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default DemoShowcase;
