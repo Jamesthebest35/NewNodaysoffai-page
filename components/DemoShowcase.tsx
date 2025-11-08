@@ -160,11 +160,23 @@ const DemoShowcase: React.FC<DemoShowcaseProps> = ({ demo, onClose }) => {
     };
     document.addEventListener('keydown', handleKeyDown);
     showcaseRef.current?.focus();
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
   }, [onClose]);
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   return (
     <div
+      onClick={handleBackdropClick}
       className="fixed inset-0 z-50 flex items-center justify-center bg-background-dark/80 backdrop-blur-sm p-4"
       aria-modal="true"
       role="dialog"

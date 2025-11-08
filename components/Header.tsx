@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Logo } from './common/Logo';
 
 const navLinks = [
@@ -13,6 +13,25 @@ const Header: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    // Prevent body scroll when mobile menu is open
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -34,6 +53,12 @@ const Header: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
   const handleMobileModalOpen = () => {
     onOpenModal();
     setIsMobileMenuOpen(false);
+  };
+
+  const handleMobileMenuBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      setIsMobileMenuOpen(false);
+    }
   };
 
   return (
@@ -68,7 +93,7 @@ const Header: React.FC<{ onOpenModal: () => void }> = ({ onOpenModal }) => {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-background-dark/95 backdrop-blur-sm md:hidden">
+        <div onClick={handleMobileMenuBackdropClick} className="fixed inset-0 z-40 bg-background-dark/95 backdrop-blur-sm md:hidden">
           <nav className="flex flex-col items-center justify-center h-full gap-8">
             {navLinks.map((link) => (
               <a 
