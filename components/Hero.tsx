@@ -1,6 +1,18 @@
 import React from 'react';
 
 const Hero: React.FC = () => {
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const href = e.currentTarget.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      const sectionId = href.substring(1);
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <section id="home" className="py-16 sm:py-24 lg:py-32 animated-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,12 +26,12 @@ const Hero: React.FC = () => {
             </h2>
           </div>
           <div className="flex flex-wrap gap-4 justify-center mt-10">
-            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+            <a href="#demos" onClick={handleScroll} className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
               <span className="truncate">See Our Demos</span>
-            </button>
-            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-surface border border-border text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-border/50 transition-colors">
+            </a>
+            <a href="#solutions" onClick={handleScroll} className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-surface border border-border text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-border/50 transition-colors">
               <span className="truncate">View Solutions</span>
-            </button>
+            </a>
           </div>
         </div>
       </div>

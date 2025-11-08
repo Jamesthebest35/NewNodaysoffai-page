@@ -20,7 +20,7 @@ const enterpriseFeatures = [
 
 const Enterprise: React.FC = () => {
   return (
-    <section className="py-16 sm:py-20 lg:py-24">
+    <section id="enterprise" className="py-16 sm:py-20 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 max-w-4xl mx-auto">
           <h2 className="text-white text-3xl font-bold leading-tight tracking-[-0.015em] pb-3 sm:text-4xl">

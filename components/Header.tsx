@@ -14,15 +14,28 @@ const Header: React.FC = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleLinkClick = () => {
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const href = e.currentTarget.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      const sectionId = href.substring(1);
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  const handleMobileLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    handleScroll(e);
     setIsMobileMenuOpen(false);
-  }
+  };
 
   return (
     <>
       <header className="sticky top-0 z-50 w-full bg-background-dark/80 backdrop-blur-sm">
         <div className="flex items-center justify-between whitespace-nowrap border-b border-solid border-border px-4 sm:px-6 lg:px-10 py-3 max-w-7xl mx-auto">
-          <a href="#" className="flex items-center gap-4 text-white">
+          <a href="#home" onClick={handleScroll} className="flex items-center gap-4 text-white">
             <div className="size-6 text-primary">
               <Logo />
             </div>
@@ -31,12 +44,12 @@ const Header: React.FC = () => {
           <div className="hidden md:flex flex-1 justify-end gap-8">
             <nav className="flex items-center gap-9">
               {navLinks.map((link) => (
-                <a key={link.label} className="text-gray-300 hover:text-primary text-sm font-medium leading-normal" href={link.href}>
+                <a key={link.label} className="text-gray-300 hover:text-primary text-sm font-medium leading-normal" href={link.href} onClick={handleScroll}>
                   {link.label}
                 </a>
               ))}
             </nav>
-            <a href="#get-started" className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+            <a href="#get-started" onClick={handleScroll} className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
               <span className="truncate">Get Started</span>
             </a>
           </div>
@@ -57,14 +70,14 @@ const Header: React.FC = () => {
                 key={link.label} 
                 className="text-gray-300 hover:text-primary text-2xl font-bold" 
                 href={link.href}
-                onClick={handleLinkClick}
+                onClick={handleMobileLinkClick}
               >
                 {link.label}
               </a>
             ))}
              <a 
                 href="#get-started" 
-                onClick={handleLinkClick}
+                onClick={handleMobileLinkClick}
                 className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 mt-4 bg-primary text-background-dark text-lg font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
               <span className="truncate">Get Started</span>
             </a>
