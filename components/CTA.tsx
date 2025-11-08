@@ -1,25 +1,21 @@
 import React from 'react';
 
-interface CTAProps {
-  onContactClick: () => void;
-}
-
-const CTA: React.FC<CTAProps> = ({ onContactClick }) => {
+const CTA: React.FC = () => {
   return (
-    <section className="bg-primary/10">
-      <div className="max-w-4xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-          <span className="block">Ready to transform your business?</span>
-        </h2>
-        <p className="mt-4 text-lg leading-6 text-gray-300">
-          Let's discuss how a custom-built AI assistant can solve your biggest challenges and unlock new opportunities for growth.
+    <section id="get-started" className="py-16 sm:py-20 lg:py-24 animated-bg">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">Ready to Transform Your Business?</h2>
+        <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8">
+          See how our AI agents can streamline your operations, reduce costs, and drive growth. Get started with a personalized demo today.
         </p>
-        <button
-          onClick={onContactClick}
-          className="mt-8 w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-background bg-primary hover:bg-primary/90 sm:w-auto"
-        >
-          Schedule a Free Consultation
-        </button>
+        <div className="flex flex-wrap gap-4 justify-center">
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+            <span className="truncate">Schedule a Demo</span>
+          </button>
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-surface text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-border/50 transition-colors border border-border">
+            <span className="truncate">View Demos</span>
+          </button>
+        </div>
       </div>
     </section>
   );

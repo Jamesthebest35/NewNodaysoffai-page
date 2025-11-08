@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Stats from './components/Stats';
@@ -7,36 +7,24 @@ import Demos from './components/Demos';
 import Enterprise from './components/Enterprise';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
-import ContactModal from './components/ContactModal';
-import DemoShowcase from './components/DemoShowcase';
-import { DemoData } from './data/demos';
 
-function App() {
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
-  const [selectedDemo, setSelectedDemo] = useState<DemoData | null>(null);
-
-  const handleOpenContactModal = () => setIsContactModalOpen(true);
-  const handleCloseContactModal = () => setIsContactModalOpen(false);
-  const handleOpenDemo = (demo: DemoData) => setSelectedDemo(demo);
-  const handleCloseDemo = () => setSelectedDemo(null);
-
+const App: React.FC = () => {
   return (
-    <div className="bg-background text-white antialiased">
-      <Header onContactClick={handleOpenContactModal} />
-      <main>
-        <Hero onContactClick={handleOpenContactModal} />
-        <Stats />
-        <Challenges />
-        <Demos onDemoClick={handleOpenDemo} />
-        <Enterprise />
-        <CTA onContactClick={handleOpenContactModal} />
-      </main>
-      <Footer />
-
-      {isContactModalOpen && <ContactModal onClose={handleCloseContactModal} />}
-      {selectedDemo && <DemoShowcase demo={selectedDemo} onClose={handleCloseDemo} />}
+    <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+      <div className="layout-container flex h-full grow flex-col">
+        <Header />
+        <main className="flex-1">
+          <Hero />
+          <Stats />
+          <Challenges />
+          <Demos />
+          <Enterprise />
+          <CTA />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
-}
+};
 
 export default App;

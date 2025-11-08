@@ -1,46 +1,47 @@
 import React from 'react';
 
 const enterpriseFeatures = [
-    { icon: 'dns', name: 'On-Premise Deployment', description: 'Deploy our AI within your own infrastructure for maximum security and control.' },
-    { icon: 'model_training', name: 'Custom Model Training', description: 'We fine-tune models on your proprietary data for unparalleled accuracy and domain expertise.' },
-    { icon: 'support_agent', name: 'Dedicated Support', description: 'Get a dedicated success manager and 24/7 priority support for your mission-critical operations.' },
-    { icon: 'database', name: 'Full Data Ownership', description: 'You retain 100% ownership and control over your data, models, and intellectual property.' },
-    { icon: 'security', name: 'Advanced Security', description: 'Benefit from enterprise-grade security features, including SSO, audit logs, and role-based access control.' },
-    { icon: 'hub', name: 'Scalable Infrastructure', description: 'Our solutions are built to scale with your business, from a single department to a global enterprise.' },
+  {
+    icon: 'local_shipping',
+    title: 'Supply Chain Optimization',
+    description: 'Our AI analyzes your entire supply chain to identify bottlenecks, reduce logistics costs, and improve delivery timelines.'
+  },
+  {
+    icon: 'precision_manufacturing',
+    title: 'Predictive Maintenance',
+    description: 'Prevent costly downtime by using AI to predict equipment failures before they happen, scheduling maintenance proactively.'
+  },
+  {
+    icon: 'checklist_rtl',
+    title: 'Automated Quality Control',
+    description: 'Leverage computer vision to automate quality inspections on your production line, ensuring higher standards and less waste.'
+  }
 ];
 
 const Enterprise: React.FC = () => {
-    return (
-        <section id="enterprise" className="py-16 sm:py-20 lg:py-24 bg-surface">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="lg:text-center">
-                    <h2 className="text-base font-semibold text-primary tracking-wide uppercase">For Enterprise</h2>
-                    <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
-                        Built for the Most Demanding Environments
-                    </p>
-                    <p className="mt-4 max-w-2xl text-xl text-gray-400 lg:mx-auto">
-                        We provide the security, scalability, and support that large organizations require to deploy AI with confidence.
-                    </p>
-                </div>
-
-                <div className="mt-12">
-                    <dl className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 lg:grid-cols-3">
-                        {enterpriseFeatures.map((feature) => (
-                            <div key={feature.name} className="relative">
-                                <dt>
-                                    <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary text-background">
-                                         <span className="material-symbols-outlined">{feature.icon}</span>
-                                    </div>
-                                    <p className="ml-16 text-lg leading-6 font-medium text-white">{feature.name}</p>
-                                </dt>
-                                <dd className="mt-2 ml-16 text-base text-gray-400">{feature.description}</dd>
-                            </div>
-                        ))}
-                    </dl>
-                </div>
+  return (
+    <section className="py-16 sm:py-20 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12 max-w-4xl mx-auto">
+          <h2 className="text-white text-3xl font-bold leading-tight tracking-[-0.015em] pb-3 sm:text-4xl">
+            Enterprise Solutions for Manufacturing
+          </h2>
+          <p className="text-gray-400 text-lg">
+            From supply chain optimization to predictive maintenance, our enterprise-grade AI agents are built to handle the complexity of modern manufacturing.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {enterpriseFeatures.map((feature) => (
+            <div key={feature.title} className="bg-surface p-6 rounded-xl border border-border flex flex-col items-center text-center">
+              <span className="material-symbols-outlined text-primary text-4xl mb-4">{feature.icon}</span>
+              <h3 className="font-bold text-lg mb-2 text-white">{feature.title}</h3>
+              <p className="text-gray-400 text-sm">{feature.description}</p>
             </div>
-        </section>
-    );
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default Enterprise;

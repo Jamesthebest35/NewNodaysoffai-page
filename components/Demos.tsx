@@ -1,58 +1,60 @@
-import React from 'react';
-import { demosData, DemoData } from '../data/demos';
+import React, { useState } from 'react';
+import DemoShowcase from './DemoShowcase';
+import { DemoData, demosData } from '../data/demos';
 
-interface DemosProps {
-  onDemoClick: (demo: DemoData) => void;
-}
+const Demos: React.FC = () => {
+  const [showcaseVisible, setShowcaseVisible] = useState(false);
+  const [activeDemo, setActiveDemo] = useState<DemoData | null>(null);
 
-const Demos: React.FC<DemosProps> = ({ onDemoClick }) => {
+  const handleOpenShowcase = (demo: DemoData) => {
+    setActiveDemo(demo);
+    setShowcaseVisible(true);
+  };
+
+  const handleCloseShowcase = () => {
+    setShowcaseVisible(false);
+    setActiveDemo(null);
+  };
+
   return (
-    <section id="demos" className="py-16 sm:py-20 lg:py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">See It In Action</h2>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-400">
-            Explore interactive demos tailored for your industry. No powerpoints, just real-world application.
-          </p>
-        </div>
-        <div className="mt-12 max-w-lg mx-auto grid gap-8 lg:grid-cols-2 lg:max-w-none">
-          {demosData.map((demo) => (
-            <div key={demo.title} className="flex flex-col rounded-xl shadow-lg overflow-hidden border border-border bg-surface">
-              <div className="p-6">
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary">
-                        <span className="material-symbols-outlined text-2xl">{demo.icon}</span>
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-primary">{demo.industry}</p>
-                        <h3 className="text-xl font-semibold text-white">{demo.title}</h3>
-                    </div>
+    <>
+      <section id="demos" className="py-16 sm:py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-white text-3xl font-bold leading-tight tracking-[-0.015em] pb-3 sm:text-4xl">Our AI Agent Demos</h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {demosData.map((demo) => (
+              <div key={demo.title} className="flex flex-col bg-surface p-8 rounded-xl border border-border">
+                <div className="mb-4">
+                  <span className="inline-flex items-center gap-2 bg-primary/10 text-primary py-1 px-3 rounded-full text-sm font-semibold">
+                    <span className="material-symbols-outlined text-base">{demo.icon}</span>
+                    {demo.industry}
+                  </span>
                 </div>
-                <p className="mt-4 text-base text-gray-400">{demo.description}</p>
-                <ul className="mt-4 space-y-2">
+                <h3 className="text-2xl font-bold text-white mb-3">{demo.title}</h3>
+                <p className="text-gray-400 mb-6 flex-grow">{demo.description}</p>
+                <ul className="space-y-3 mb-8">
                   {demo.features.map((feature) => (
-                    <li key={feature} className="flex items-start">
-                      <div className="flex-shrink-0">
-                        <span className="material-symbols-outlined text-base text-green-400 mt-1">check_circle</span>
-                      </div>
-                      <p className="ml-3 text-base text-gray-400">{feature}</p>
+                    <li key={feature} className="flex items-start gap-3">
+                      <span className="material-symbols-outlined text-lg text-primary mt-1">check_circle</span>
+                      <span className="text-gray-300">{feature}</span>
                     </li>
                   ))}
                 </ul>
-              </div>
-              <div className="p-6 bg-background-dark/50 mt-auto">
                 <button
-                  onClick={() => onDemoClick(demo)}
-                  className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20"
+                  onClick={() => handleOpenShowcase(demo)}
+                  className="w-full flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors"
                 >
-                  Launch Interactive Demo
+                  <span className="truncate">View Demo Showcase</span>
                 </button>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      {showcaseVisible && activeDemo && <DemoShowcase demo={activeDemo} onClose={handleCloseShowcase} />}
+    </>
   );
 };
 

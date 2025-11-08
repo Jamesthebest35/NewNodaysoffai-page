@@ -100,7 +100,7 @@ const DemoShowcase: React.FC<DemoShowcaseProps> = ({ demo, onClose }) => {
           <aside className="w-56 bg-surface border-r border-border p-4 hidden md:flex flex-col">
              <div className="flex items-center gap-2 mb-8">
                 <div className="size-6 text-primary"><Logo /></div>
-                <h2 className="text-white font-bold">No Days Off AI</h2>
+                <h2 className="text-white font-bold">No Days Off</h2>
             </div>
             <nav className="flex flex-col gap-2">
               {currentSidebar.map(link => (
