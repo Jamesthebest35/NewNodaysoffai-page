@@ -24,7 +24,12 @@ const ContactModal = ({ onClose }: { onClose: () => void }) => {
     };
     document.addEventListener('keydown', handleKeyDown);
     modalRef.current?.focus();
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
   }, [onClose]);
 
   const handleSubmit = (e: React.FormEvent) => {
