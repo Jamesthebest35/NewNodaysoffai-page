@@ -15,6 +15,8 @@ import CookieSettingsModal from './components/CookieSettingsModal';
 const ContactModal = ({ onClose }: { onClose: () => void }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -27,12 +29,38 @@ const ContactModal = ({ onClose }: { onClose: () => void }) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => {
-      onClose();
-    }, 2500);
+    setIsLoading(true);
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Something went wrong.');
+      }
+      
+      setIsSubmitted(true);
+      setTimeout(() => {
+        onClose();
+      }, 2500);
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -64,8 +92,8 @@ const ContactModal = ({ onClose }: { onClose: () => void }) => {
             <p className="text-gray-400 text-sm mb-6">Fill out the form below and we'll get back to you as soon as possible.</p>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="full-name" className="block text-xs font-medium text-gray-400">Full Name</label>
-                <input required type="text" name="full-name" id="full-name" autoComplete="name" className="mt-1 block w-full rounded-md border-border/50 bg-border text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm" placeholder="Jane Doe" />
+                <label htmlFor="fullName" className="block text-xs font-medium text-gray-400">Full Name</label>
+                <input required type="text" name="fullName" id="fullName" autoComplete="name" className="mt-1 block w-full rounded-md border-border/50 bg-border text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm" placeholder="Jane Doe" />
               </div>
               <div>
                 <label htmlFor="email" className="block text-xs font-medium text-gray-400">Email</label>
@@ -79,12 +107,14 @@ const ContactModal = ({ onClose }: { onClose: () => void }) => {
                 <label htmlFor="message" className="block text-xs font-medium text-gray-400">Message</label>
                 <textarea required id="message" name="message" rows={4} className="mt-1 block w-full rounded-md border-border/50 bg-border text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm" placeholder="Your message..."></textarea>
               </div>
+              {error && <p className="text-sm text-red-400">{error}</p>}
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-background-dark bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-surface"
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-background-dark bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-surface disabled:bg-primary/50 disabled:cursor-not-allowed"
                 >
-                  Send Request
+                  {isLoading ? 'Sending...' : 'Send Request'}
                 </button>
               </div>
             </form>
